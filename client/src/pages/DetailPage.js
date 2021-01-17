@@ -4,15 +4,21 @@ import { useHttp } from '../hooks/http.hook';
 import { AuthContext } from '../context/AuthContext';
 import { Loader } from '../components/Loader';
 import { LinkCard } from '../components/LinkCard';
+import { useMessage } from '../hooks/message.hook'
 
 export const DetailPage = () => {
     const {token} = useContext(AuthContext);
-    const {request, loading} = useHttp();
+    const {request, loading, error, clearError} = useHttp();
     const [link, setLink] = useState(null);
     const linkId = useParams().id;
+    const message = useMessage();
+    
+    useEffect(() => {
+        message(error);
+        clearError();
+    }, [error, message, clearError]);
     
     const getLink = useCallback(async () => {
-        console.log('Bearer', token)
         try {
             const fetched = await request(`/api/link/${linkId}`, 'GET', null, {
                 Authorization: `Bearer ${token}`
