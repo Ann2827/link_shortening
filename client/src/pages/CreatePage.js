@@ -2,12 +2,19 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useHttp } from '../hooks/http.hook';
 import { useHistory } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { useMessage } from '../hooks/message.hook'
 
 export const CreatePage = () => {
     const history = useHistory();
     const auth = useContext(AuthContext);
-    const {request} = useHttp();
+    const {request, error, clearError} = useHttp();
     const [link, setLink] = useState('');
+    const message = useMessage();
+    
+    useEffect(() => {
+        message(error);
+        clearError();
+    }, [error, message, clearError]);
     
     useEffect(() => {
         window.M.updateTextFields();
